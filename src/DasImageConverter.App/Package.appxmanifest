@@ -2,22 +2,19 @@
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
-  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap uap10 rescap">
 
   <Identity
-    Name="DAS.ImageConverter"
-    Publisher="CN=DAS"
+    Name="Berrizak.DASImageConverter"
+    Publisher="CN=B0B0AFCA-DF2F-4FD5-B05F-5BA3B734E00D"
     Version="1.0.0.0" />
-
-  <mp:PhoneIdentity PhoneProductId="7DAF8592-EE99-47AB-9944-FA123DE646CE" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>DAS Image Converter</DisplayName>
-    <PublisherDisplayName>DAS</PublisherDisplayName>
+    <PublisherDisplayName>Berrizak</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
     <uap10:PackageIntegrity>
       <uap10:Content Enforcement="on"/>
@@ -25,8 +22,7 @@
   </Properties>
 
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26200.0" />
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26200.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
   </Dependencies>
 
   <Resources>

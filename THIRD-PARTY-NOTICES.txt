@@ -11,19 +11,27 @@ Squoosh under the Apache License, Version 2.0.
 Local image decoding, resizing, color-space management, and encoding for JPEG, PNG,
 WebP, and AVIF are powered by Magick.NET (https://github.com/dlemstra/Magick.NET),
 licensed under the Apache License, Version 2.0, wrapping ImageMagick
-(https://imagemagick.org/script/license.php).
+(https://imagemagick.org/license/).
 
-3. Bundled Image Codecs inside Magick.NET Native
-------------------------------------------------
+3. Bundled Image Codecs & Delegates inside Magick.Native
+--------------------------------------------------------
+The bundled Magick.Native dynamic library statically links ImageMagick and its
+companion image codecs/delegates, including:
 - libjpeg-turbo (IJG / BSD-3-Clause / zlib)
 - libpng (libpng License)
 - libwebp (BSD-3-Clause)
 - libavif / aom (BSD-2-Clause / Alliance for Open Media Patent License 1.0)
-- libheif (GNU Lesser General Public License v3.0 — dynamically loaded via Magick.Native)
-- zlib, bzip2, lcms2, brotli, freetype, and companion ImageMagick delegates
-  (see full Notice.txt bundled in the application directory).
+- libde265, libraw, liblzma, fribidi, pango, librsvg, libcroco (GNU Lesser General
+  Public License — LGPL; source code for DAS Image Converter is published under the
+  Apache License, Version 2.0 at https://github.com/Zakfdl/DAS-Image-Converter-Windows)
+- zlib, bzip2, lcms2, brotli, freetype, openexr, openjpeg, libtiff, libxml2, zstd,
+  and companion delegates
+
+The complete upstream attribution and license texts are bundled in Notice.txt in
+the application directory.
 
 4. .NET & Windows App SDK Libraries
 -----------------------------------
+- Microsoft .NET 8 Runtime & Libraries (MIT)
 - Microsoft.WindowsAppSDK (MIT)
 - CommunityToolkit.Mvvm (MIT)

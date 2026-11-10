@@ -754,7 +754,8 @@
                                             <Border Width="62" Height="54" CornerRadius="8">
                                                 <Grid>
                                                     <Image
-                                                        Source="{Binding Tag, ElementName=RootAnchor}"
+                                                        ActualThemeChanged="CheckerboardImage_ActualThemeChanged"
+                                                        Loaded="CheckerboardImage_Loaded"
                                                         Stretch="UniformToFill" />
                                                     <Image
                                                         Source="{x:Bind PreviewBytes, Converter={StaticResource BytesToImageConverter}}"
@@ -807,9 +808,6 @@
                         </ItemsRepeater>
                     </StackPanel>
                 </Border>
-
-                <!-- Anchor element to provide dynamic Light/Dark checkerboard bitmap inside ItemTemplate -->
-                <Border x:Name="RootAnchor" Width="0" Height="0" />
 
                 <!-- Trust Grid (01, 02, 03) -->
                 <Grid Margin="0,56,0,42" ColumnSpacing="24">

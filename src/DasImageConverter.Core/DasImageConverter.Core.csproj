@@ -8,7 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="15.1.0" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="15.1.0" GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <ItemGroup Condition="Exists('$(PkgMagick_NET-Q8-AnyCPU)\Notice.txt')">
+    <Content Include="$(PkgMagick_NET-Q8-AnyCPU)\Notice.txt" Link="Notice.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

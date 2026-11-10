@@ -18,27 +18,41 @@ namespace DasImageConverter_App;
 /// </summary>
 public sealed partial class MainPage : Page
 {
-    public MainConverterViewModel ViewModel => App.ViewModel;
+    private WriteableBitmap? _lightCheckerboard;
+    private WriteableBitmap? _darkCheckerboard;
 
-    public WriteableBitmap CheckerboardSource
-    {
-        get => (WriteableBitmap)RootAnchor.Tag;
-        private set => RootAnchor.Tag = value;
-    }
+    public MainConverterViewModel ViewModel => App.ViewModel;
 
     public MainPage()
     {
         InitializeComponent();
-        RefreshCheckerboard();
-        ActualThemeChanged += (_, _) => RefreshCheckerboard();
         ViewModel.PropertyChanged += ViewModel_PropertyChanged;
     }
 
-    private void RefreshCheckerboard()
+    private WriteableBitmap GetCheckerboardBitmap(ElementTheme theme)
     {
-        var isDark = ActualTheme == ElementTheme.Dark;
-        var bitmap = CheckerboardHelper.CreateCheckerboardBitmap(isDark);
-        RootAnchor.Tag = bitmap;
+        if (theme == ElementTheme.Dark)
+        {
+            return _darkCheckerboard ??= CheckerboardHelper.CreateCheckerboardBitmap(isDark: true);
+        }
+
+        return _lightCheckerboard ??= CheckerboardHelper.CreateCheckerboardBitmap(isDark: false);
+    }
+
+    private void CheckerboardImage_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is Image image)
+        {
+            image.Source = GetCheckerboardBitmap(image.ActualTheme);
+        }
+    }
+
+    private void CheckerboardImage_ActualThemeChanged(FrameworkElement sender, object args)
+    {
+        if (sender is Image image)
+        {
+            image.Source = GetCheckerboardBitmap(image.ActualTheme);
+        }
     }
 
     private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -154,6 +168,7 @@ public sealed partial class MainPage : Page
     private async void OpenNotices_Click(object sender, RoutedEventArgs e)
     {
         var noticesPath = Path.Combine(AppContext.BaseDirectory, "THIRD-PARTY-NOTICES.txt");
+        var fullNoticePath = Path.Combine(AppContext.BaseDirectory, "Notice.txt");
         var text = File.Exists(noticesPath)
             ? await File.ReadAllTextAsync(noticesPath)
             : "DAS Image Converter — Offline Local Image Processing\nPowered by Magick.NET (Apache 2.0), ImageMagick, and Windows App SDK.";
@@ -172,10 +187,35 @@ public sealed partial class MainPage : Page
                     FontSize = 12,
                 },
             },
+            SecondaryButtonText = File.Exists(fullNoticePath) ? "Full Notice.txt" : string.Empty,
             CloseButtonText = "Close",
             XamlRoot = XamlRoot,
         };
 
-        await dialog.ShowAsync();
+        var result = await dialog.ShowAsync();
+        if (result == ContentDialogResult.Secondary && File.Exists(fullNoticePath))
+        {
+            var fullText = await File.ReadAllTextAsync(fullNoticePath);
+            var noticeBox = new TextBox
+            {
+                Text = fullText,
+                IsReadOnly = true,
+                AcceptsReturn = true,
+                TextWrapping = TextWrapping.Wrap,
+                FontSize = 11,
+                Height = 380,
+                MinWidth = 460,
+            };
+            ScrollViewer.SetVerticalScrollBarVisibility(noticeBox, ScrollBarVisibility.Auto);
+
+            var fullDialog = new ContentDialog
+            {
+                Title = "ImageMagick & Codec Notices (Notice.txt)",
+                Content = noticeBox,
+                CloseButtonText = "Close",
+                XamlRoot = XamlRoot,
+            };
+            await fullDialog.ShowAsync();
+        }
     }
 }

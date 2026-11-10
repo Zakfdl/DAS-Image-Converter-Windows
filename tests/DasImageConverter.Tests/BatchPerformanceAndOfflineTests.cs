@@ -86,6 +86,18 @@ public sealed class BatchPerformanceAndOfflineTests
 
         Assert.DoesNotContain("internetClient", manifestXml, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("ads.js", manifestXml, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Windows.Universal", manifestXml, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Windows.Desktop", manifestXml, StringComparison.Ordinal);
+        Assert.DoesNotContain("CN=DAS", manifestXml, StringComparison.Ordinal);
+        Assert.Contains("Berrizak.DASImageConverter", manifestXml, StringComparison.Ordinal);
+
+        var appCsprojPath = Path.Combine(repoRoot, "src", "DasImageConverter.App", "DasImageConverter.App.csproj");
+        var appCsproj = File.ReadAllText(appCsprojPath);
+        Assert.Contains("<SelfContained>true</SelfContained>", appCsproj, StringComparison.Ordinal);
+        Assert.DoesNotContain("Version=\"*\"", appCsproj, StringComparison.Ordinal);
+        Assert.DoesNotContain("Microsoft.WindowsAppSDK.ML", appCsproj, StringComparison.Ordinal);
+
+        Assert.True(File.Exists(Path.Combine(AppContext.BaseDirectory, "Notice.txt")), "Expected Magick.NET Notice.txt in output directory.");
 
         var coreDir = Path.Combine(repoRoot, "src", "DasImageConverter.Core");
         foreach (var csFile in Directory.GetFiles(coreDir, "*.cs", SearchOption.AllDirectories))
