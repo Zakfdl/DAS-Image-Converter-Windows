@@ -1,0 +1,29 @@
+DAS IMAGE CONVERTER (NATIVE WINDOWS APP) — THIRD-PARTY NOTICES
+
+1. DAS Image Converter Web Baseline & Squoosh Reference
+-------------------------------------------------------
+Visual identity, workflow design, and format parity are adapted from DAS Image
+Converter (img.berrizak.com), which includes portions adapted from GoogleChromeLabs
+Squoosh under the Apache License, Version 2.0.
+
+2. Magick.NET & ImageMagick
+---------------------------
+Local image decoding, resizing, color-space management, and encoding for JPEG, PNG,
+WebP, and AVIF are powered by Magick.NET (https://github.com/dlemstra/Magick.NET),
+licensed under the Apache License, Version 2.0, wrapping ImageMagick
+(https://imagemagick.org/script/license.php).
+
+3. Bundled Image Codecs inside Magick.NET Native
+------------------------------------------------
+- libjpeg-turbo (IJG / BSD-3-Clause / zlib)
+- libpng (libpng License)
+- libwebp (BSD-3-Clause)
+- libavif / aom (BSD-2-Clause / Alliance for Open Media Patent License 1.0)
+- libheif (GNU Lesser General Public License v3.0 — dynamically loaded via Magick.Native)
+- zlib, bzip2, lcms2, brotli, freetype, and companion ImageMagick delegates
+  (see full Notice.txt bundled in the application directory).
+
+4. .NET & Windows App SDK Libraries
+-----------------------------------
+- Microsoft.WindowsAppSDK (MIT)
+- CommunityToolkit.Mvvm (MIT)

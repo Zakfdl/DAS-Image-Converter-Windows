@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DasImageConverter.App (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "DasImageConverter.App (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

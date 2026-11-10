@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Application
+    x:Class="DasImageConverter_App.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="using:DasImageConverter_App.Converters">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <ResourceDictionary Source="ms-appx:///Themes/DasTokens.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <conv:BytesToImageConverter x:Key="BytesToImageConverter" />
+            <conv:BoolToVisibilityConverter x:Key="BoolToVis" />
+            <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis" />
+            <conv:RgbToColorConverter x:Key="RgbToColor" />
+            <conv:RgbToBrushConverter x:Key="RgbToBrush" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

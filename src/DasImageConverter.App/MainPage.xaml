@@ -1,0 +1,935 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="DasImageConverter_App.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:DasImageConverter.Core.ViewModels"
+    AllowDrop="True"
+    Background="{ThemeResource DasPageBackgroundBrush}"
+    DragLeave="Root_DragLeave"
+    DragOver="Root_DragOver"
+    Drop="Root_Drop"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="DasCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource DasCardBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource DasBorderSubtleBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="Padding" Value="28" />
+        </Style>
+
+        <Style x:Key="DasPrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{ThemeResource DasCoralAccentBrush}" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Setter Property="BorderBrush" Value="{ThemeResource DasCoralAccentBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="MinHeight" Value="42" />
+            <Setter Property="Padding" Value="18,0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style x:Key="DasSecondaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{ThemeResource DasCardBackgroundBrush}" />
+            <Setter Property="Foreground" Value="{ThemeResource DasInkPrimaryBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource DasBorderSubtleBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="MinHeight" Value="40" />
+            <Setter Property="Padding" Value="16,0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+
+        <Style x:Key="DasSaveButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{ThemeResource DasMintWashBrush}" />
+            <Setter Property="Foreground" Value="{ThemeResource DasMintTextBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource DasMintBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <!-- Subtle top-right coral atmosphere matching styles.css -->
+        <Ellipse
+            Width="640"
+            Height="640"
+            Margin="0,-240,-200,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            IsHitTestVisible="False">
+            <Ellipse.Fill>
+                <RadialGradientBrush Center="0.5,0.5" GradientOrigin="0.5,0.5" RadiusX="0.5" RadiusY="0.5">
+                    <GradientStop Offset="0" Color="{ThemeResource DasCoralGlowColor}" />
+                    <GradientStop Offset="1" Color="Transparent" />
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <ScrollViewer x:Name="MainScrollViewer" VerticalScrollBarVisibility="Auto">
+            <StackPanel
+                MaxWidth="940"
+                Margin="28,14,28,36"
+                HorizontalAlignment="Stretch"
+                Spacing="0">
+
+                <!-- Top Brand & Privacy Header -->
+                <Grid Margin="0,2,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Spacing="11">
+                        <Border
+                            Width="32"
+                            Height="32"
+                            CornerRadius="10">
+                            <Image Source="Assets/DasLogoMark.png" Stretch="UniformToFill" />
+                        </Border>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="15"
+                            Foreground="{ThemeResource DasInkPrimaryBrush}">
+                            <Run Text="DAS " />
+                            <Run FontWeight="Bold" Text="Image Converter" />
+                        </TextBlock>
+                    </StackPanel>
+
+                    <StackPanel
+                        Grid.Column="1"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Spacing="14">
+                        <StackPanel
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Spacing="8">
+                            <Grid Width="15" Height="15">
+                                <Ellipse Fill="#2247A786" />
+                                <Ellipse
+                                    Width="7"
+                                    Height="7"
+                                    Fill="{ThemeResource DasMintAccentBrush}" />
+                            </Grid>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource DasInkMutedBrush}"
+                                Text="Processed locally" />
+                        </StackPanel>
+
+                        <Button
+                            AutomationProperties.Name="Switch theme"
+                            Click="CycleThemeButton_Click"
+                            CornerRadius="8"
+                            Padding="10,6"
+                            Background="{ThemeResource DasCardBackgroundBrush}"
+                            BorderBrush="{ThemeResource DasBorderSubtleBrush}"
+                            BorderThickness="1"
+                            ToolTipService.ToolTip="Switch Light / Dark / System theme">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon FontSize="13" Glyph="&#xE790;" Foreground="{ThemeResource DasInkMutedBrush}" />
+                                <TextBlock
+                                    FontSize="12"
+                                    FontWeight="SemiBold"
+                                    Foreground="{ThemeResource DasInkPrimaryBrush}"
+                                    Text="{x:Bind ViewModel.ThemeLabel, Mode=OneWay}" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Hero -->
+                <StackPanel Margin="0,4,0,22" HorizontalAlignment="Center" Spacing="8">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        CharacterSpacing="150"
+                        FontSize="11"
+                        FontWeight="Bold"
+                        Foreground="{ThemeResource DasCoralDarkBrush}"
+                        Text="PRIVATE BY DEFAULT" />
+
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="40"
+                        FontWeight="Bold"
+                        Foreground="{ThemeResource DasInkPrimaryBrush}"
+                        LineHeight="44"
+                        TextAlignment="Center"
+                        TextWrapping="WrapWholeWords">
+                        <Run Text="Your images stay " />
+                        <LineBreak />
+                        <Run Foreground="{ThemeResource DasCoralAccentBrush}" Text="on your device." />
+                    </TextBlock>
+
+                    <TextBlock
+                        MaxWidth="470"
+                        HorizontalAlignment="Center"
+                        FontSize="15"
+                        Foreground="{ThemeResource DasInkMutedBrush}"
+                        LineHeight="22"
+                        Text="Convert, resize, and save images without sending a single pixel to a server."
+                        TextAlignment="Center"
+                        TextWrapping="WrapWholeWords" />
+                </StackPanel>
+
+                <!-- Upload / Drag & Drop Card -->
+                <Grid
+                    x:Name="DropZoneCard"
+                    MinHeight="196"
+                    AllowDrop="True"
+                    AutomationProperties.Name="Drop images here or browse from your device"
+                    IsHitTestVisible="{x:Bind ViewModel.IsNotBusy, Mode=OneWay}"
+                    IsTabStop="True"
+                    KeyDown="DropZone_KeyDown"
+                    PointerPressed="DropZone_PointerPressed">
+
+                    <Border
+                        x:Name="DropZoneSurface"
+                        Background="{ThemeResource DasDropZoneBackgroundBrush}"
+                        CornerRadius="22"
+                        Padding="28" />
+
+                    <Rectangle
+                        x:Name="DropZoneDashedBorder"
+                        IsHitTestVisible="False"
+                        RadiusX="22"
+                        RadiusY="22"
+                        Stroke="{ThemeResource DasBorderDashedBrush}"
+                        StrokeDashArray="5,4"
+                        StrokeThickness="1.5" />
+
+                    <Border
+                        IsHitTestVisible="False"
+                        Background="{ThemeResource DasDropZoneHoverBrush}"
+                        BorderBrush="{ThemeResource DasCoralAccentBrush}"
+                        BorderThickness="2"
+                        CornerRadius="22"
+                        Visibility="{x:Bind ViewModel.IsDragOver, Mode=OneWay, Converter={StaticResource BoolToVis}}" />
+
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Padding="24"
+                        Spacing="0">
+                        <Border
+                            Width="62"
+                            Height="62"
+                            HorizontalAlignment="Center"
+                            Background="{ThemeResource DasCoralWashBrush}"
+                            CornerRadius="19">
+                            <Viewbox Width="28" Height="28">
+                                <Canvas Width="48" Height="48">
+                                    <Path
+                                        Data="M24,32 L24,8 M16,16 L24,8 L32,16"
+                                        Stroke="{ThemeResource DasCoralAccentBrush}"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="3.2" />
+                                    <Path
+                                        Data="M9,27 L9,34.5 A5.5,5.5 0 0 0 14.5,40 L33.5,40 A5.5,5.5 0 0 0 39,34.5 L39,27"
+                                        Stroke="{ThemeResource DasCoralAccentBrush}"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="3.2" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+
+                        <TextBlock
+                            Margin="0,18,0,0"
+                            HorizontalAlignment="Center"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            Foreground="{ThemeResource DasInkPrimaryBrush}"
+                            Text="Drop images here" />
+
+                        <StackPanel
+                            Margin="0,6,0,0"
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="4">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Foreground="{ThemeResource DasInkMutedBrush}"
+                                Text="or" />
+                            <HyperlinkButton
+                                Padding="2,0"
+                                VerticalAlignment="Center"
+                                Command="{x:Bind ViewModel.BrowseFilesCommand}"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource DasCoralDarkBrush}">
+                                <TextBlock Text="browse from your device" TextDecorations="Underline" />
+                            </HyperlinkButton>
+                        </StackPanel>
+
+                        <TextBlock
+                            Margin="0,20,0,0"
+                            HorizontalAlignment="Center"
+                            FontSize="11"
+                            Foreground="{ThemeResource DasInkSubtleBrush}"
+                            Text="JPEG · PNG · WebP · AVIF  •  Up to 50 files" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Inline Notice Banner -->
+                <Border
+                    Margin="2,12,2,0"
+                    Padding="13,11"
+                    Background="{ThemeResource DasNoticeWashBrush}"
+                    CornerRadius="10"
+                    Visibility="{x:Bind ViewModel.HasNotice, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                    <TextBlock
+                        FontSize="13"
+                        Foreground="{ThemeResource DasNoticeTextBrush}"
+                        IsTextSelectionEnabled="True"
+                        Text="{x:Bind ViewModel.NoticeMessage, Mode=OneWay}"
+                        TextWrapping="WrapWholeWords" />
+                </Border>
+
+                <!-- Conversion Settings Card -->
+                <Border
+                    Margin="0,18,0,0"
+                    Style="{StaticResource DasCardStyle}"
+                    Visibility="{x:Bind ViewModel.HasItems, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                    <StackPanel Spacing="0">
+                        <!-- Panel Heading -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Spacing="4">
+                                <TextBlock
+                                    CharacterSpacing="150"
+                                    FontSize="11"
+                                    FontWeight="Bold"
+                                    Foreground="{ThemeResource DasCoralDarkBrush}"
+                                    Text="CONVERSION SETTINGS" />
+                                <TextBlock
+                                    FontSize="22"
+                                    FontWeight="Bold"
+                                    Foreground="{ThemeResource DasInkPrimaryBrush}"
+                                    Text="Make it yours" />
+                            </StackPanel>
+
+                            <HyperlinkButton
+                                Grid.Column="1"
+                                VerticalAlignment="Top"
+                                Command="{x:Bind ViewModel.ClearAllCommand}"
+                                FontSize="13"
+                                Foreground="{ThemeResource DasInkMutedBrush}">
+                                <TextBlock Text="Clear all" TextDecorations="Underline" />
+                            </HyperlinkButton>
+                        </Grid>
+
+                        <!-- Queued Files List -->
+                        <ScrollViewer
+                            Margin="0,22,0,24"
+                            MaxHeight="240"
+                            VerticalScrollBarVisibility="Auto">
+                            <ItemsRepeater ItemsSource="{x:Bind ViewModel.Items}">
+                                <ItemsRepeater.Layout>
+                                    <StackLayout Spacing="8" />
+                                </ItemsRepeater.Layout>
+                                <ItemsRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:QueueItemViewModel">
+                                        <Border
+                                            Padding="12,10"
+                                            Background="{ThemeResource DasRowBackgroundBrush}"
+                                            BorderBrush="{ThemeResource DasBorderSubtleBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="12">
+                                            <Grid ColumnSpacing="12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="36" />
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="Auto" />
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border
+                                                    Width="36"
+                                                    Height="36"
+                                                    Background="{ThemeResource DasBorderSubtleBrush}"
+                                                    CornerRadius="8">
+                                                    <Image
+                                                        Source="{x:Bind ThumbnailBytes, Converter={StaticResource BytesToImageConverter}}"
+                                                        Stretch="UniformToFill" />
+                                                </Border>
+
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                                    <TextBlock
+                                                        FontSize="13"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{ThemeResource DasInkPrimaryBrush}"
+                                                        Text="{x:Bind FileName}"
+                                                        TextTrimming="CharacterEllipsis"
+                                                        ToolTipService.ToolTip="{x:Bind FileName}" />
+                                                    <TextBlock
+                                                        FontSize="11"
+                                                        Foreground="{ThemeResource DasInkMutedBrush}"
+                                                        Text="{x:Bind DetailsText}" />
+                                                </StackPanel>
+
+                                                <Grid Grid.Column="2" VerticalAlignment="Center">
+                                                    <TextBlock
+                                                        FontSize="11"
+                                                        Foreground="{ThemeResource DasInkMutedBrush}"
+                                                        Text="Ready"
+                                                        Visibility="{x:Bind IsReady, Mode=OneWay, Converter={StaticResource BoolToVis}}" />
+                                                    <TextBlock
+                                                        FontSize="11"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{ThemeResource DasCoralDarkBrush}"
+                                                        Text="Working…"
+                                                        Visibility="{x:Bind IsWorking, Mode=OneWay, Converter={StaticResource BoolToVis}}" />
+                                                    <TextBlock
+                                                        FontSize="11"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{ThemeResource DasMintTextBrush}"
+                                                        Text="Done"
+                                                        Visibility="{x:Bind IsDone, Mode=OneWay, Converter={StaticResource BoolToVis}}" />
+                                                    <TextBlock
+                                                        FontSize="11"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="{ThemeResource DasNoticeTextBrush}"
+                                                        Text="Unsupported"
+                                                        ToolTipService.ToolTip="{x:Bind ErrorMessage, Mode=OneWay}"
+                                                        Visibility="{x:Bind IsFailed, Mode=OneWay, Converter={StaticResource BoolToVis}}" />
+                                                </Grid>
+
+                                                <Button
+                                                    Grid.Column="3"
+                                                    Width="28"
+                                                    Height="28"
+                                                    Padding="0"
+                                                    VerticalAlignment="Center"
+                                                    AutomationProperties.Name="Remove image"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Click="RemoveItemButton_Click"
+                                                    CornerRadius="7"
+                                                    ToolTipService.ToolTip="Remove">
+                                                    <FontIcon FontSize="11" Glyph="&#xE711;" Foreground="{ThemeResource DasInkMutedBrush}" />
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsRepeater.ItemTemplate>
+                            </ItemsRepeater>
+                        </ScrollViewer>
+
+                        <!-- Format & Quality Settings Grid -->
+                        <Grid ColumnSpacing="20">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.78*" MinWidth="170" />
+                                <ColumnDefinition Width="1.22*" MinWidth="240" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Spacing="8">
+                                <TextBlock
+                                    FontSize="12"
+                                    FontWeight="Bold"
+                                    Foreground="{ThemeResource DasInkMutedBrush}"
+                                    Text="Convert to" />
+                                <ComboBox
+                                    HorizontalAlignment="Stretch"
+                                    Height="42"
+                                    AutomationProperties.Name="Convert to"
+                                    IsEnabled="{x:Bind ViewModel.IsNotBusy, Mode=OneWay}"
+                                    ItemsSource="{x:Bind ViewModel.FormatOptions}"
+                                    SelectedIndex="{x:Bind ViewModel.SelectedFormatIndex, Mode=TwoWay}" />
+                            </StackPanel>
+
+                            <StackPanel
+                                Grid.Column="1"
+                                Spacing="4"
+                                Visibility="{x:Bind ViewModel.IsQualityVisible, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                                <Grid>
+                                    <TextBlock
+                                        FontSize="12"
+                                        FontWeight="Bold"
+                                        Foreground="{ThemeResource DasInkMutedBrush}"
+                                        Text="Quality" />
+                                    <TextBlock
+                                        HorizontalAlignment="Right"
+                                        FontSize="12"
+                                        FontWeight="Bold"
+                                        Foreground="{ThemeResource DasInkPrimaryBrush}"
+                                        Text="{x:Bind ViewModel.QualityDisplayText, Mode=OneWay}" />
+                                </Grid>
+
+                                <Slider
+                                    AutomationProperties.Name="Quality"
+                                    IsEnabled="{x:Bind ViewModel.IsNotBusy, Mode=OneWay}"
+                                    Maximum="100"
+                                    Minimum="1"
+                                    StepFrequency="1"
+                                    Value="{x:Bind ViewModel.Quality, Mode=TwoWay}" />
+
+                                <Grid>
+                                    <TextBlock
+                                        FontSize="10"
+                                        Foreground="{ThemeResource DasInkSubtleBrush}"
+                                        Text="Smaller file" />
+                                    <TextBlock
+                                        HorizontalAlignment="Right"
+                                        FontSize="10"
+                                        Foreground="{ThemeResource DasInkSubtleBrush}"
+                                        Text="Sharper image" />
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Resize Row -->
+                        <Border
+                            Margin="0,24,0,0"
+                            Padding="0,20,0,0"
+                            BorderBrush="{ThemeResource DasDividerBrush}"
+                            BorderThickness="0,1,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                    <ToggleSwitch
+                                        MinWidth="0"
+                                        IsEnabled="{x:Bind ViewModel.IsNotBusy, Mode=OneWay}"
+                                        IsOn="{x:Bind ViewModel.ResizeEnabled, Mode=TwoWay}"
+                                        OffContent=""
+                                        OnContent="" />
+                                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="Bold"
+                                            Foreground="{ThemeResource DasInkPrimaryBrush}"
+                                            Text="Resize images" />
+                                        <TextBlock
+                                            FontSize="11"
+                                            Foreground="{ThemeResource DasInkMutedBrush}"
+                                            Text="Keep the original proportions" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    Spacing="8">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="Bold"
+                                        Foreground="{ThemeResource DasInkMutedBrush}"
+                                        Text="Max width" />
+                                    <NumberBox
+                                        Width="128"
+                                        IsEnabled="{x:Bind ViewModel.CanEditMaxWidth, Mode=OneWay}"
+                                        Maximum="30000"
+                                        Minimum="1"
+                                        SpinButtonPlacementMode="Compact"
+                                        Value="{x:Bind ViewModel.MaxWidth, Mode=TwoWay}" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        FontWeight="Bold"
+                                        Foreground="{ThemeResource DasInkMutedBrush}"
+                                        Text="px" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- JPEG Transparency Note -->
+                        <Border
+                            Margin="0,18,0,0"
+                            Padding="13,11"
+                            Background="{ThemeResource DasWarningWashBrush}"
+                            CornerRadius="10"
+                            Visibility="{x:Bind ViewModel.IsJpegNoteVisible, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                            <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    Foreground="{ThemeResource DasCoralAccentBrush}"
+                                    Text="◐" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Foreground="{ThemeResource DasWarningTextBrush}"
+                                    Text="JPEG does not support transparency. Transparent areas will use" />
+
+                                <Button
+                                    Padding="8,4"
+                                    IsEnabled="{x:Bind ViewModel.IsNotBusy, Mode=OneWay}"
+                                    Background="{ThemeResource DasCardBackgroundBrush}"
+                                    BorderBrush="{ThemeResource DasBorderSubtleBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="7">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <Border
+                                            Width="14"
+                                            Height="14"
+                                            Background="{x:Bind ViewModel.JpegBackground, Mode=OneWay, Converter={StaticResource RgbToBrush}}"
+                                            BorderBrush="{ThemeResource DasBorderSubtleBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="4" />
+                                        <TextBlock
+                                            FontSize="12"
+                                            FontWeight="Bold"
+                                            Foreground="{ThemeResource DasCoralDarkBrush}"
+                                            Text="{x:Bind ViewModel.JpegBackgroundHex, Mode=OneWay}" />
+                                    </StackPanel>
+                                    <Button.Flyout>
+                                        <Flyout>
+                                            <StackPanel Spacing="10">
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    FontWeight="SemiBold"
+                                                    Text="Transparency fill color" />
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <Button Width="28" Height="28" Padding="0" Background="#FFFFFF" BorderBrush="#CFD8E2" BorderThickness="1" Click="PresetColor_Click" Tag="#FFFFFF" ToolTipService.ToolTip="White (#FFFFFF)" />
+                                                    <Button Width="28" Height="28" Padding="0" Background="#000000" BorderBrush="#CFD8E2" BorderThickness="1" Click="PresetColor_Click" Tag="#000000" ToolTipService.ToolTip="Black (#000000)" />
+                                                    <Button Width="28" Height="28" Padding="0" Background="#F5F7FB" BorderBrush="#CFD8E2" BorderThickness="1" Click="PresetColor_Click" Tag="#F5F7FB" ToolTipService.ToolTip="Soft Canvas (#F5F7FB)" />
+                                                    <Button Width="28" Height="28" Padding="0" Background="#18212C" BorderBrush="#CFD8E2" BorderThickness="1" Click="PresetColor_Click" Tag="#18212C" ToolTipService.ToolTip="Ink Slate (#18212C)" />
+                                                </StackPanel>
+                                                <ColorPicker
+                                                    Color="{x:Bind ViewModel.JpegBackground, Mode=TwoWay, Converter={StaticResource RgbToColor}}"
+                                                    ColorSpectrumShape="Box"
+                                                    IsAlphaEnabled="False"
+                                                    IsMoreButtonVisible="False" />
+                                            </StackPanel>
+                                        </Flyout>
+                                    </Button.Flyout>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Progress Indicator (shown when busy) -->
+                        <StackPanel
+                            Margin="0,20,0,0"
+                            Spacing="6"
+                            Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                            <ProgressBar
+                                Maximum="100"
+                                Minimum="0"
+                                Value="{x:Bind ViewModel.ProgressPercent, Mode=OneWay}" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource DasInkMutedBrush}"
+                                Text="{x:Bind ViewModel.ProgressText, Mode=OneWay}" />
+                        </StackPanel>
+
+                        <!-- Action Row -->
+                        <Grid Margin="0,24,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{ThemeResource DasInkMutedBrush}"
+                                Text="{x:Bind ViewModel.ReadyCountText, Mode=OneWay}" />
+
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                                <Button
+                                    AutomationProperties.Name="Convert images"
+                                    Command="{x:Bind ViewModel.ConvertCommand}"
+                                    Style="{StaticResource DasPrimaryButtonStyle}"
+                                    Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource InverseBoolToVis}}">
+                                    <Button.Resources>
+                                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#D9573A" />
+                                        <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="#FFFFFF" />
+                                        <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="#D9573A" />
+                                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#C24A2F" />
+                                        <SolidColorBrush x:Key="ButtonForegroundPressed" Color="#FFFFFF" />
+                                        <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="#66EF6B4D" />
+                                        <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="#CCFFFFFF" />
+                                        <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="#33EF6B4D" />
+                                    </Button.Resources>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon FontSize="13" Glyph="&#xE8AB;" />
+                                        <TextBlock Text="Convert images" />
+                                    </StackPanel>
+                                </Button>
+
+                                <Button
+                                    Command="{x:Bind ViewModel.CancelCommand}"
+                                    Content="Cancel"
+                                    Style="{StaticResource DasSecondaryButtonStyle}"
+                                    Visibility="{x:Bind ViewModel.IsBusy, Mode=OneWay, Converter={StaticResource BoolToVis}}" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Results Card -->
+                <Border
+                    x:Name="ResultsCard"
+                    Margin="0,18,0,0"
+                    Background="{ThemeResource DasCardBackgroundBrush}"
+                    BorderBrush="{ThemeResource DasResultsBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="20"
+                    Padding="28"
+                    Visibility="{x:Bind ViewModel.HasResults, Mode=OneWay, Converter={StaticResource BoolToVis}}">
+                    <StackPanel Spacing="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Spacing="4">
+                                <TextBlock
+                                    CharacterSpacing="150"
+                                    FontSize="11"
+                                    FontWeight="Bold"
+                                    Foreground="{ThemeResource DasCoralDarkBrush}"
+                                    Text="FINISHED FILES" />
+                                <TextBlock
+                                    FontSize="22"
+                                    FontWeight="Bold"
+                                    Foreground="{ThemeResource DasInkPrimaryBrush}"
+                                    Text="Ready to download" />
+                            </StackPanel>
+
+                            <Button
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="Download ZIP"
+                                Command="{x:Bind ViewModel.ExportZipCommand}"
+                                Style="{StaticResource DasSecondaryButtonStyle}">
+                                <StackPanel Orientation="Horizontal" Spacing="7">
+                                    <FontIcon FontSize="12" Glyph="&#xE896;" />
+                                    <TextBlock Text="{x:Bind ViewModel.ExportZipButtonText, Mode=OneWay}" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <ItemsRepeater Margin="0,20,0,0" ItemsSource="{x:Bind ViewModel.Results}">
+                            <ItemsRepeater.Layout>
+                                <StackLayout Spacing="10" />
+                            </ItemsRepeater.Layout>
+                            <ItemsRepeater.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ResultItemViewModel">
+                                    <Border
+                                        Padding="10"
+                                        Background="{ThemeResource DasRowBackgroundBrush}"
+                                        BorderBrush="{ThemeResource DasBorderSubtleBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="12">
+                                        <Grid ColumnSpacing="13">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="62" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Border Width="62" Height="54" CornerRadius="8">
+                                                <Grid>
+                                                    <Image
+                                                        Source="{Binding Tag, ElementName=RootAnchor}"
+                                                        Stretch="UniformToFill" />
+                                                    <Image
+                                                        Source="{x:Bind PreviewBytes, Converter={StaticResource BytesToImageConverter}}"
+                                                        Stretch="UniformToFill" />
+                                                </Grid>
+                                            </Border>
+
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="4">
+                                                <TextBlock
+                                                    FontSize="13"
+                                                    FontWeight="Bold"
+                                                    Foreground="{ThemeResource DasInkPrimaryBrush}"
+                                                    Text="{x:Bind OutputFileName}"
+                                                    TextTrimming="CharacterEllipsis"
+                                                    ToolTipService.ToolTip="{x:Bind OutputFileName}" />
+                                                <TextBlock FontSize="11" Foreground="{ThemeResource DasInkMutedBrush}">
+                                                    <Run Text="{x:Bind OriginalSizeText}" />
+                                                    <Run Text=" → " />
+                                                    <Run FontWeight="Bold" Foreground="{ThemeResource DasInkPrimaryBrush}" Text="{x:Bind OutputSizeText}" />
+                                                    <Run Text=" · " />
+                                                    <Run Text="{x:Bind DimensionsText}" />
+                                                </TextBlock>
+                                            </StackPanel>
+
+                                            <Grid Grid.Column="2" VerticalAlignment="Center">
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    FontWeight="Bold"
+                                                    Foreground="{ThemeResource DasMintTextBrush}"
+                                                    Text="{x:Bind DeltaText}"
+                                                    Visibility="{x:Bind IsNotLarger, Converter={StaticResource BoolToVis}}" />
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    FontWeight="Bold"
+                                                    Foreground="{ThemeResource DasLargerDeltaBrush}"
+                                                    Text="{x:Bind DeltaText}"
+                                                    Visibility="{x:Bind IsLarger, Converter={StaticResource BoolToVis}}" />
+                                            </Grid>
+
+                                            <Button
+                                                Grid.Column="3"
+                                                VerticalAlignment="Center"
+                                                Click="SaveResultButton_Click"
+                                                Content="Save"
+                                                Style="{StaticResource DasSaveButtonStyle}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsRepeater.ItemTemplate>
+                        </ItemsRepeater>
+                    </StackPanel>
+                </Border>
+
+                <!-- Anchor element to provide dynamic Light/Dark checkerboard bitmap inside ItemTemplate -->
+                <Border x:Name="RootAnchor" Width="0" Height="0" />
+
+                <!-- Trust Grid (01, 02, 03) -->
+                <Grid Margin="0,56,0,42" ColumnSpacing="24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border
+                        Padding="4,18,4,0"
+                        BorderBrush="{ThemeResource DasBorderSubtleBrush}"
+                        BorderThickness="0,1,0,0">
+                        <StackPanel Spacing="8">
+                            <TextBlock
+                                CharacterSpacing="120"
+                                FontSize="11"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource DasCoralAccentBrush}"
+                                Text="01" />
+                            <TextBlock
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource DasInkPrimaryBrush}"
+                                Text="Nothing leaves your device" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource DasInkMutedBrush}"
+                                LineHeight="19"
+                                Text="Files are decoded and converted locally on Windows. DAS never uploads or stores your images."
+                                TextWrapping="WrapWholeWords" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border
+                        Grid.Column="1"
+                        Padding="4,18,4,0"
+                        BorderBrush="{ThemeResource DasBorderSubtleBrush}"
+                        BorderThickness="0,1,0,0">
+                        <StackPanel Spacing="8">
+                            <TextBlock
+                                CharacterSpacing="120"
+                                FontSize="11"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource DasCoralAccentBrush}"
+                                Text="02" />
+                            <TextBlock
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource DasInkPrimaryBrush}"
+                                Text="Useful formats, no clutter" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource DasInkMutedBrush}"
+                                LineHeight="19"
+                                Text="Choose JPEG, PNG, WebP, or AVIF, then tune quality or resize while keeping proportions intact."
+                                TextWrapping="WrapWholeWords" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border
+                        Grid.Column="2"
+                        Padding="4,18,4,0"
+                        BorderBrush="{ThemeResource DasBorderSubtleBrush}"
+                        BorderThickness="0,1,0,0">
+                        <StackPanel Spacing="8">
+                            <TextBlock
+                                CharacterSpacing="120"
+                                FontSize="11"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource DasCoralAccentBrush}"
+                                Text="03" />
+                            <TextBlock
+                                FontSize="15"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource DasInkPrimaryBrush}"
+                                Text="Save what you need" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource DasInkMutedBrush}"
+                                LineHeight="19"
+                                Text="Save files one by one or bundle up to 50 completed images into a single ZIP archive."
+                                TextWrapping="WrapWholeWords" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Footer -->
+                <Border
+                    Padding="0,18,0,0"
+                    BorderBrush="{ThemeResource DasBorderSubtleBrush}"
+                    BorderThickness="0,1,0,0">
+                    <Grid>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="11"
+                            Foreground="{ThemeResource DasInkSubtleBrush}"
+                            Text="© DAS Image Converter" />
+
+                        <StackPanel
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal"
+                            Spacing="12"
+                            VerticalAlignment="Center">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="11"
+                                Foreground="{ThemeResource DasInkSubtleBrush}"
+                                Text="Local processing · No accounts · Offline ready" />
+                            <HyperlinkButton
+                                Padding="0"
+                                Click="OpenNotices_Click"
+                                FontSize="11"
+                                Foreground="{ThemeResource DasInkMutedBrush}">
+                                <TextBlock Text="Third-party notices" TextDecorations="Underline" />
+                            </HyperlinkButton>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
