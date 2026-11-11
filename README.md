@@ -10,7 +10,7 @@ Native WinUI 3 / Windows App SDK desktop application for **DAS Image Converter**
 - **Batch Processing:** Up to 50 images (60 MP / 100 MB per-file limits), drag-and-drop, native file picker, progress indicator, cancellation, and per-item error isolation.
 - **Exports:** Individual native save picker and local collision-safe ZIP archive export (`DAS-converted-YYYY-MM-DD.zip`).
 - **Themes:** Native DAS Light, DAS Dark, and System themes.
-- **Privacy & Offline:** Zero network capabilities (`internetClient` omitted), zero ads, zero accounts, zero remote uploads. See [PRIVACY.md](PRIVACY.md).
+- **Privacy & Offline:** Zero network capabilities (`internetClient` omitted), zero ads, zero accounts, zero remote uploads. See [PRIVACY.md](PRIVACY.md) or the live page at `https://berrizak.com/PRIVACY.html`.
 
 ## Solution Structure
 - `src/DasImageConverter.Core/` — Platform-agnostic image engine, validation, sanitization, ZIP export, and MVVM ViewModels.
@@ -36,6 +36,6 @@ winapp package src/DasImageConverter.App/DasImageConverter.App.csproj -c Release
    appcert.exe test -apptype windowsstoreapp -packagefullname "<InstalledPackageFullName>" -reportoutputpath "artifacts\wack-report.xml"
    ```
 4. **Partner Center Declarations:**
-   - **Privacy Policy URL:** Link to `https://github.com/Zakfdl/DAS-Image-Converter-Windows/blob/main/PRIVACY.md` (or your hosted privacy page).
+   - **Privacy Policy URL:** `https://berrizak.com/PRIVACY.html` (markdown source kept in [PRIVACY.md](PRIVACY.md)).
    - **Restricted Capability (`runFullTrust`) Justification:** *"DAS Image Converter is a native WinUI 3 desktop utility that runs offline with standard medium-integrity user privileges to decode, convert, and save user-selected local image files and ZIP archives via Windows file pickers and drag-and-drop."*
-   - **Listing Metadata:** Upload desktop screenshots, set IARC age rating, and target Windows Desktop.
+   - **Listing Metadata & Store Assets:** Upload desktop screenshots and Store logos from `docs/store/`, set IARC age rating, and target Windows Desktop.
